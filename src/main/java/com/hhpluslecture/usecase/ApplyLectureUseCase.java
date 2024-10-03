@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+
 @Component
 @RequiredArgsConstructor
 public class ApplyLectureUseCase {
@@ -18,6 +20,7 @@ public class ApplyLectureUseCase {
     private final LectureRegistrationService lectureRegistrationService;
 
     @Getter
+    @AllArgsConstructor
     public static class Input {
         Long memberId;
         Long lectureItemId;
@@ -27,6 +30,9 @@ public class ApplyLectureUseCase {
     @Getter
     public static class Output {
         Long lectureRegistrationId;
+        Long memberId;
+        Long lectureItemId;
+        LocalDateTime registrationDate;
     }
     @Transactional
     public Output execute(Input input) {
@@ -38,7 +44,12 @@ public class ApplyLectureUseCase {
         LectureRegistration registeredLectureRegistration = lectureRegistrationService.register(memberId, lectureItemId);
         lectureInventoryService.decreaseInventory(lectureInventory);
 
-        return new Output(registeredLectureRegistration.getId());
+        return new Output(
+                registeredLectureRegistration.getId(),
+                registeredLectureRegistration.getMemberId(),
+                registeredLectureRegistration.getLectureItemId(),
+                registeredLectureRegistration.getRegistrationDate()
+        );
     }
 
 
