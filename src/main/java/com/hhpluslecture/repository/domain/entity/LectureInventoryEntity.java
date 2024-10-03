@@ -16,13 +16,11 @@ public class LectureInventoryEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;  // Primary Key
+    private Long id;
 
-    @Column(name = "lecture_id", nullable = false)
-    private Long lectureId;  // Lecture와 ManyToOne 관계
 
     @Column(name = "lecture_item_id", nullable = false, unique = true)
-    private Long lectureItemId;  // LectureItem과 ManyToOne 관계
+    private Long lectureItemId;
 
     @Column(nullable = false)
     private int availableSeats;  // 남은 수강 가능 인원

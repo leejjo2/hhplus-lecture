@@ -4,9 +4,11 @@ import com.hhpluslecture.repository.domain.LectureItem;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 public interface LectureItemRepository {
-    List<LectureItem> findAllByIds(List<Long> lectureItemIds);
+
+    List<LectureItem> findAllByIds(Set<Long> lectureItemIds);
 
     List<LectureItem> findAllByDateRange(LocalDate startDate, LocalDate endDate);
 }

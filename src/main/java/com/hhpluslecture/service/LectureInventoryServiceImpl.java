@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -32,11 +33,11 @@ public class LectureInventoryServiceImpl implements LectureInventoryService {
     }
 
     @Override
-    public List<LectureInventory> loadAllByLectureItemIds(List<Long> lectureItemIds) {
+    public List<LectureInventory> loadAllByLectureItemIds(Set<Long> lectureItemIds) {
         return lectureInventoryRepository.findAllByLectureItemIds(lectureItemIds);
     }
     @Override
-    public List<LectureInventory> loadAllAvailableByLectureItemIdIn(List<Long> lectureItemIds) {
+    public List<LectureInventory> loadAllAvailableByLectureItemIdIn(Set<Long> lectureItemIds) {
         return lectureInventoryRepository.findAllAvailableByLectureItemIdIn(lectureItemIds);
     }
 }

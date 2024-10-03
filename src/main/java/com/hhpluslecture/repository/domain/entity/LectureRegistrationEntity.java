@@ -23,8 +23,6 @@ public class LectureRegistrationEntity {
     @Column(name = "member_id", nullable = false)
     private Long memberId;
 
-    @Column(name = "lecture_id", nullable = false)
-    private Long lectureId;
 
     @Column(name = "lecture_item_id", nullable = false)
     private Long lectureItemId;

@@ -20,7 +20,6 @@ public class ApplyLectureUseCase {
     @Getter
     public static class Input {
         Long memberId;
-        Long lectureId;
         Long lectureItemId;
     }
 
@@ -33,11 +32,10 @@ public class ApplyLectureUseCase {
     public Output execute(Input input) {
         //
         Long memberId = input.getMemberId();
-        Long lectureId = input.getLectureId();
         Long lectureItemId = input.getLectureItemId();
 
         LectureInventory lectureInventory = lectureInventoryService.checkAvailability(lectureItemId);
-        LectureRegistration registeredLectureRegistration = lectureRegistrationService.register(memberId, lectureId, lectureItemId);
+        LectureRegistration registeredLectureRegistration = lectureRegistrationService.register(memberId, lectureItemId);
         lectureInventoryService.decreaseInventory(lectureInventory);
 
         return new Output(registeredLectureRegistration.getId());

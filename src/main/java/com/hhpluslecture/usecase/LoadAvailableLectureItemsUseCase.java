@@ -16,6 +16,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -46,7 +47,7 @@ public class LoadAvailableLectureItemsUseCase {
         List<LectureItem> lectureItems = lectureItemService.loadAllByDateRange(startLocalDate, endLocalDate);
 
         List<Long> lectureIds = lectureItems.stream().map(LectureItem::getLectureId).collect(Collectors.toList());
-        List<Long> lectureItemIds = lectureItems.stream().map(LectureItem::getId).collect(Collectors.toList());
+        Set<Long> lectureItemIds = lectureItems.stream().map(LectureItem::getId).collect(Collectors.toSet());
 
         Map<Long, LectureItem> lectureItemMap = lectureItems.stream().collect(Collectors.toMap(LectureItem::getId, Function.identity()));
         Map<Long, Lecture> lectureMap = lectureService.loadAllByIds(lectureIds).stream().collect(Collectors.toMap(Lecture::getId, Function.identity()));
@@ -54,8 +55,8 @@ public class LoadAvailableLectureItemsUseCase {
 
         List<Output> outputList = new ArrayList<>();
         for (LectureInventory availableLectureInventory : availableLectureInventories) {
-            Lecture lecture = lectureMap.get(availableLectureInventory.getLectureId());
             LectureItem lectureItem = lectureItemMap.get(availableLectureInventory.getLectureItemId());
+            Lecture lecture = lectureMap.get(lectureItem.getLectureId());
 
             Output out = new Output(
                     lecture.getId(),

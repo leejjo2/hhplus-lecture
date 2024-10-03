@@ -6,7 +6,8 @@ import java.util.List;
 
 public interface LectureRegistrationService {
 
-    LectureRegistration register(Long memberId, Long lectureId, Long lectureItemId);
+
+    LectureRegistration register(Long memberId, Long lectureItemId);
 
     List<LectureRegistration> loadByMemberId(Long memberId);
 }

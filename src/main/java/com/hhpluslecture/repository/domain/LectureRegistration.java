@@ -16,7 +16,6 @@ public class LectureRegistration {
 
     private Long memberId;
 
-    private Long lectureId;
 
     private Long lectureItemId;
 
@@ -30,7 +29,6 @@ public class LectureRegistration {
         return new LectureRegistration(
                 entity.getId(),
                 entity.getMemberId(),
-                entity.getLectureId(),
                 entity.getLectureItemId(),
                 entity.getRegistrationDate()
         );
@@ -40,7 +38,6 @@ public class LectureRegistration {
         return new LectureRegistrationEntity(
                 domain.getId(),
                 domain.getMemberId(),
-                domain.getLectureId(),
                 domain.getLectureItemId(),
                 domain.getRegistrationDate()
         );

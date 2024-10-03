@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Repository
@@ -26,11 +27,11 @@ public class LectureInventoryRepositoryImpl implements LectureInventoryRepositor
     }
 
     @Override
-    public List<LectureInventory> findAllByLectureItemIds(List<Long> lectureItemIds) {
+    public List<LectureInventory> findAllByLectureItemIds(Set<Long> lectureItemIds) {
         return lectureInventoryJpaRepository.findAllByLectureItemIdIn(lectureItemIds).stream().map(LectureInventory::fromEntity).collect(Collectors.toList());
     }
     @Override
-    public List<LectureInventory> findAllAvailableByLectureItemIdIn(List<Long> lectureItemIds) {
+    public List<LectureInventory> findAllAvailableByLectureItemIdIn(Set<Long> lectureItemIds) {
         return lectureInventoryJpaRepository.findAllAvailableByLectureItemIdIn(lectureItemIds).stream().map(LectureInventory::fromEntity).collect(Collectors.toList());
     }
 }

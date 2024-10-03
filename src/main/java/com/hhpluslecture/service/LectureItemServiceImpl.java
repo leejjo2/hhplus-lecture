@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -15,7 +16,7 @@ public class LectureItemServiceImpl implements LectureItemService {
     private final LectureItemRepository lectureItemRepository;
 
     @Override
-    public List<LectureItem> loadAllByIds(List<Long> lectureItemIds) {
+    public List<LectureItem> loadAllByIds(Set<Long> lectureItemIds) {
         return lectureItemRepository.findAllByIds(lectureItemIds);
     }
 

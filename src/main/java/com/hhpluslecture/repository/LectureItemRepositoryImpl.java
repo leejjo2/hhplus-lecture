@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Repository
@@ -16,7 +17,7 @@ public class LectureItemRepositoryImpl implements LectureItemRepository {
     private final LectureItemJpaRepository lectureItemJpaRepository;
 
     @Override
-    public List<LectureItem> findAllByIds(List<Long> lectureItemIds) {
+    public List<LectureItem> findAllByIds(Set<Long> lectureItemIds) {
         return lectureItemJpaRepository.findAllByIdIn(lectureItemIds).stream().map(LectureItem::fromEntity).collect(Collectors.toList());
     }
 

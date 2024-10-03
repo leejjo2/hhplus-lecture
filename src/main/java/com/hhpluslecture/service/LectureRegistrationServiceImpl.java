@@ -17,14 +17,14 @@ public class LectureRegistrationServiceImpl implements LectureRegistrationServic
     private final LectureRegistrationRepository lectureRegistrationRepository;
 
     @Override
-    public LectureRegistration register(Long memberId, Long lectureId, Long lectureItemId) {
+    public LectureRegistration register(Long memberId, Long lectureItemId) {
         //
         LectureRegistration checkLectureRegistration = lectureRegistrationRepository.findByMemberIdAndLectureItemId(memberId, lectureItemId);
         if (checkLectureRegistration != null) {
             throw new AlreadyRegisteredLectureException();
         }
 
-        LectureRegistration lectureRegistration = new LectureRegistration(null, memberId, lectureId, lectureItemId, LocalDateTime.now(ZoneId.of("Asia/Seoul")));
+        LectureRegistration lectureRegistration = new LectureRegistration(null, memberId, lectureItemId, LocalDateTime.now(ZoneId.of("Asia/Seoul")));
         return lectureRegistrationRepository.create(lectureRegistration);
     }
 

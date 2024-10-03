@@ -19,6 +19,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -51,9 +52,9 @@ public class LoadMemberRegistrationUseCase {
         //
         List<LectureRegistration> lectureRegistrations = lectureRegistrationService.loadByMemberId(memberId);
 
-        List<Long> lectureIds = lectureRegistrations.stream().map(LectureRegistration::getLectureId).collect(Collectors.toList());
-        List<Long> lectureItemIds = lectureRegistrations.stream().map(LectureRegistration::getLectureItemId).collect(Collectors.toList());
+        Set<Long> lectureItemIds = lectureRegistrations.stream().map(LectureRegistration::getLectureItemId).collect(Collectors.toSet());
 
+        List<Long> lectureIds = lectureItemService.loadAllByIds(lectureItemIds).stream().map(LectureItem::getLectureId).collect(Collectors.toList());
 
         Map<Long, Lecture> lectureMap = lectureService.loadAllByIds(lectureIds).stream().collect(Collectors.toMap(Lecture::getId, Function.identity()));
         Map<Long, LectureItem> lectureItemMap = lectureItemService.loadAllByIds(lectureItemIds).stream().collect(Collectors.toMap(LectureItem::getId, Function.identity()));
@@ -61,8 +62,8 @@ public class LoadMemberRegistrationUseCase {
 
         List<Output> outputList = new ArrayList<>();
         for (LectureRegistration lectureRegistration : lectureRegistrations) {
-            Lecture lecture = lectureMap.get(lectureRegistration.getLectureId());
             LectureItem lectureItem = lectureItemMap.get(lectureRegistration.getLectureItemId());
+            Lecture lecture = lectureMap.get(lectureItem.getLectureId());
             LectureInventory lectureInventory = lectureInventoryMap.get(lectureRegistration.getLectureItemId());
 
             Output out = new Output(

@@ -12,7 +12,6 @@ public class LectureInventory {
 
     private Long id;
 
-    private Long lectureId;
 
     private Long lectureItemId;
 
@@ -26,7 +25,6 @@ public class LectureInventory {
         }
         return new LectureInventory(
                 entity.getId(),
-                entity.getLectureId(),
                 entity.getLectureItemId(),
                 entity.getAvailableSeats()
         );
@@ -35,7 +33,6 @@ public class LectureInventory {
     public static LectureInventoryEntity toEntity(LectureInventory domain) {
         return new LectureInventoryEntity(
                 domain.getId(),
-                domain.getLectureId(),
                 domain.getLectureItemId(),
                 domain.getAvailableSeats()
         );
