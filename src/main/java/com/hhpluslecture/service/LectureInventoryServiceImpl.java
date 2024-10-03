@@ -1,5 +1,6 @@
 package com.hhpluslecture.service;
 
+import com.hhpluslecture.exception.custom.SeatExceededException;
 import com.hhpluslecture.repository.domain.LectureInventory;
 import com.hhpluslecture.repository.port.LectureInventoryRepository;
 import com.hhpluslecture.service.port.LectureInventoryService;
@@ -18,7 +19,7 @@ public class LectureInventoryServiceImpl implements LectureInventoryService {
     public LectureInventory checkAvailability(Long lectureItemId) {
         LectureInventory lectureInventory = lectureInventoryRepository.findLectureInventoryByIdForUpdate(lectureItemId);
         if (lectureInventory.getAvailableSeats() == 0) {
-            throw new RuntimeException("정원 초과");
+            throw new SeatExceededException();
         } else {
             return lectureInventory;
         }

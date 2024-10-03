@@ -21,7 +21,7 @@ public class LectureRegistrationServiceImpl implements LectureRegistrationServic
         //
         LectureRegistration checkLectureRegistration = lectureRegistrationRepository.findByMemberIdAndLectureItemId(memberId, lectureItemId);
         if (checkLectureRegistration != null) {
-            throw new AlreadyRegisteredLectureException("이미 등록한 강의입니다.");
+            throw new AlreadyRegisteredLectureException();
         }
 
         LectureRegistration lectureRegistration = new LectureRegistration(null, memberId, lectureId, lectureItemId, LocalDateTime.now(ZoneId.of("Asia/Seoul")));
