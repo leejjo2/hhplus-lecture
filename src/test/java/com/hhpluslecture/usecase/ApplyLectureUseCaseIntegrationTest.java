@@ -167,4 +167,43 @@ class ApplyLectureUseCaseIntegrationTest {
         assertThat(updatedLectureInventoryEntity.getAvailableSeats()).isEqualTo(availableSeats - threadCount);
     }
 
+    @Test
+    @DisplayName("수강 신청 동시성 테스트 - 인원 초과")
+    void shouldSuccessfullyEnrollLectureWithConcurrencyWhenExceedCapacity() {
+        // given
+        int threadCount = 40;
+        int capacity = 30;
+
+        LectureEntity lectureEntity = lectureJpaRepository.save(
+                new LectureEntity(null, "name", "gangsa")
+        );
+        LectureItemEntity lectureItemEntity = lectureItemJpaRepository.save(
+                new LectureItemEntity(null, lectureEntity.getId(), LocalDate.now(), capacity)
+        );
+        LectureInventoryEntity lectureInventoryEntity = lectureInventoryJpaRepository.save(
+                new LectureInventoryEntity(null, lectureItemEntity.getId(), capacity)
+        );
+
+        Long lectureId = lectureEntity.getId();
+        Long lectureItemId = lectureItemEntity.getId();
+
+        // when
+        List<CompletableFuture<Void>> futures = IntStream.range(0, threadCount)
+                .mapToObj(i -> CompletableFuture.runAsync(() -> {
+                    try {
+                        target.execute(new ApplyLectureUseCase.Input((long) i, lectureItemId));
+                    } catch (BusinessException e) {
+                        assertThat(e.getMessage()).isEqualTo(LectureErrorCode.ENROLLMENT_EXCEED_CAPACITY.getMessage());
+                    }
+                }))
+                .toList();
+        CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
+
+        // then
+        LectureInventoryEntity updatedLectureInventoryEntity = lectureInventoryJpaRepository
+                .findByLectureItemId(lectureItemId).get();
+        assertThat(updatedLectureInventoryEntity.getAvailableSeats()).isEqualTo(0);
+        List<LectureRegistrationEntity> lectureRegistrationEntities = lectureRegistrationJpaRepository.findAllByLectureItemId(lectureItemId);
+        assertThat(lectureRegistrationEntities).hasSize(30);
+    }
 }
