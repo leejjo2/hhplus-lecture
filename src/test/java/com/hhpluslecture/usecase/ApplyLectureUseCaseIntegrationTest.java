@@ -132,4 +132,39 @@ class ApplyLectureUseCaseIntegrationTest {
                 availableSeats - 1);
     }
 
+    @Test
+    @DisplayName("수강 신청 성공 동시성 테스트")
+    void shouldSuccessfullyEnrollLectureWithConcurrency() {
+        // given
+        int threadCount = 30;
+        int capacity = 30;
+        int availableSeats = 30;
+
+        LectureEntity lectureEntity = lectureJpaRepository.save(
+                new LectureEntity(null, "name", "gangsa")
+        );
+        LectureItemEntity lectureItemEntity = lectureItemJpaRepository.save(
+                new LectureItemEntity(null, lectureEntity.getId(), LocalDate.now(), capacity)
+        );
+        LectureInventoryEntity lectureInventoryEntity = lectureInventoryJpaRepository.save(
+                new LectureInventoryEntity(null, lectureItemEntity.getId(), availableSeats)
+        );
+
+        Long lectureId = lectureEntity.getId();
+        Long lectureItemId = lectureItemEntity.getId();
+
+        // when
+        List<CompletableFuture<Void>> futures = IntStream.range(0, threadCount)
+                .mapToObj(i -> CompletableFuture.runAsync(() -> {
+                    target.execute(new ApplyLectureUseCase.Input((long) i, lectureItemId));
+                }))
+                .toList();
+        CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
+
+        // then
+        LectureInventoryEntity updatedLectureInventoryEntity = lectureInventoryJpaRepository
+                .findByLectureItemId(lectureItemId).get();
+        assertThat(updatedLectureInventoryEntity.getAvailableSeats()).isEqualTo(availableSeats - threadCount);
+    }
+
 }
