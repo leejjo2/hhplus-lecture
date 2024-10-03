@@ -134,7 +134,7 @@ class ApplyLectureUseCaseIntegrationTest {
 
     @Test
     @DisplayName("수강 신청 성공 동시성 테스트")
-    void shouldSuccessfullyEnrollLectureWithConcurrency() {
+    void shouldSuccessApplyLectureWithConcurrency() {
         // given
         int threadCount = 30;
         int capacity = 30;
@@ -169,7 +169,7 @@ class ApplyLectureUseCaseIntegrationTest {
 
     @Test
     @DisplayName("수강 신청 동시성 테스트 - 인원 초과")
-    void shouldSuccessfullyEnrollLectureWithConcurrencyWhenExceedCapacity() {
+    void shouldSuccessApplyLectureWithConcurrencyWhenExceedCapacity() {
         // given
         int threadCount = 40;
         int capacity = 30;
@@ -205,5 +205,47 @@ class ApplyLectureUseCaseIntegrationTest {
         assertThat(updatedLectureInventoryEntity.getAvailableSeats()).isEqualTo(0);
         List<LectureRegistrationEntity> lectureRegistrationEntities = lectureRegistrationJpaRepository.findAllByLectureItemId(lectureItemId);
         assertThat(lectureRegistrationEntities).hasSize(30);
+    }
+
+    @Test
+    @DisplayName("수강 신청 성공 동시성 테스트 - 동일 유저 중복 신청")
+    void shouldSuccessApplyLectureWithConcurrencyWhenAlreadyApplied() {
+        // given
+        Long memberId = 1L;
+        int threadCount = 5;
+        int capacity = 30;
+
+        LectureEntity lectureEntity = lectureJpaRepository.save(
+                new LectureEntity(null, "name", "gangsa")
+        );
+        LectureItemEntity lectureItemEntity = lectureItemJpaRepository.save(
+                new LectureItemEntity(null, lectureEntity.getId(), LocalDate.now(), capacity)
+        );
+        LectureInventoryEntity lectureInventoryEntity = lectureInventoryJpaRepository.save(
+                new LectureInventoryEntity(null, lectureItemEntity.getId(), capacity)
+        );
+        Long lectureId = lectureEntity.getId();
+        Long lectureItemEntityId = lectureItemEntity.getId();
+
+        // when
+        List<CompletableFuture<Void>> futures = IntStream.range(0, threadCount)
+                .mapToObj(i -> CompletableFuture.runAsync(() -> {
+                    try {
+                        target.execute(new ApplyLectureUseCase.Input(memberId, lectureItemEntityId));
+                    } catch (BusinessException e) {
+                        assertThat(e.getMessage()).isEqualTo(LectureErrorCode.ALREADY_REGISTERED_LECTURE
+                                .getMessage());
+                    }
+                }))
+                .toList();
+        CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
+
+        // then
+        List<LectureRegistrationEntity> lectureRegistrationEntities = lectureRegistrationJpaRepository
+                .findAllByLectureItemId(lectureItemEntityId);
+        assertThat(lectureRegistrationEntities).hasSize(1);
+        var lectureRegistration = lectureRegistrationEntities.get(0);
+        assertThat(lectureRegistration.getLectureItemId()).isEqualTo(lectureItemEntityId);
+        assertThat(lectureRegistration.getMemberId()).isEqualTo(memberId);
     }
 }
