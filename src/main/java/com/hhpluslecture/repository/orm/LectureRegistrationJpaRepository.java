@@ -12,4 +12,6 @@ public interface LectureRegistrationJpaRepository extends JpaRepository<LectureR
     Optional<LectureRegistrationEntity> findByMemberIdAndLectureItemId(Long memberId, Long lectureItemId);
 
     List<LectureRegistrationEntity> findAllByMemberId(Long memberId);
+
+    List<LectureRegistrationEntity> findAllByLectureItemId(Long lectureItemId);
 }

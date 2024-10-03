@@ -22,4 +22,6 @@ public interface LectureInventoryJpaRepository extends JpaRepository<LectureInve
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select d from LectureInventoryEntity d where d.lectureItemId = :lectureItemId")
     Optional<LectureInventoryEntity> findByLectureItemIdForUpdate(Long lectureItemId);
+
+    Optional<LectureInventoryEntity> findByLectureItemId(Long lectureItemId);
 }

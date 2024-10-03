@@ -1,5 +1,7 @@
 package com.hhpluslecture.repository;
 
+import com.hhpluslecture.exception.BusinessException;
+import com.hhpluslecture.exception.LectureErrorCode;
 import com.hhpluslecture.repository.domain.LectureInventory;
 import com.hhpluslecture.repository.orm.LectureInventoryJpaRepository;
 import com.hhpluslecture.repository.port.LectureInventoryRepository;
@@ -18,7 +20,7 @@ public class LectureInventoryRepositoryImpl implements LectureInventoryRepositor
 
     @Override
     public LectureInventory findLectureInventoryByIdForUpdate(Long lectureItemId) {
-        return LectureInventory.fromEntity(lectureInventoryJpaRepository.findByLectureItemIdForUpdate(lectureItemId).orElseThrow());
+        return lectureInventoryJpaRepository.findByLectureItemIdForUpdate(lectureItemId).map(LectureInventory::fromEntity).orElseThrow(() -> new BusinessException(LectureErrorCode.LECTURE_NOT_FOUND));
     }
 
     @Override

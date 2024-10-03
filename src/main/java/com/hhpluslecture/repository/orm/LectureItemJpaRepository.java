@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 public interface LectureItemJpaRepository extends JpaRepository<LectureItemEntity, String> {
@@ -14,4 +15,6 @@ public interface LectureItemJpaRepository extends JpaRepository<LectureItemEntit
 
     @Query("SELECT l FROM LectureItemEntity l WHERE  l.date BETWEEN :startDate AND :endDate")
     List<LectureItemEntity> findAllByDateRange(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
+
+    Optional<LectureItemEntity> findById(Long id);
 }
