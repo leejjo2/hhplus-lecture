@@ -29,4 +29,8 @@ public class LectureInventoryRepositoryImpl implements LectureInventoryRepositor
     public List<LectureInventory> findAllByLectureItemIds(List<Long> lectureItemIds) {
         return lectureInventoryJpaRepository.findAllByLectureItemIdIn(lectureItemIds).stream().map(LectureInventory::fromEntity).collect(Collectors.toList());
     }
+    @Override
+    public List<LectureInventory> findAllAvailableByLectureItemIdIn(List<Long> lectureItemIds) {
+        return lectureInventoryJpaRepository.findAllAvailableByLectureItemIdIn(lectureItemIds).stream().map(LectureInventory::fromEntity).collect(Collectors.toList());
+    }
 }

@@ -15,6 +15,9 @@ public interface LectureInventoryJpaRepository extends JpaRepository<LectureInve
 
     List<LectureInventoryEntity> findAllByLectureItemIdIn(List<Long> lectureItemIds);
 
+    @Query("SELECT li FROM LectureInventoryEntity li WHERE li.lectureItemId IN :lectureItemIds AND li.availableSeats > 0")
+    List<LectureInventoryEntity> findAllAvailableByLectureItemIdIn(List<Long> lectureItemIds);
+
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select d from LectureInventoryEntity d where d.lectureItemId = :lectureItemId")
     Optional<LectureInventoryEntity> findByLectureItemIdForUpdate(Long lectureItemId);

@@ -34,4 +34,8 @@ public class LectureInventoryServiceImpl implements LectureInventoryService {
     public List<LectureInventory> loadAllByLectureItemIds(List<Long> lectureItemIds) {
         return lectureInventoryRepository.findAllByLectureItemIds(lectureItemIds);
     }
+    @Override
+    public List<LectureInventory> loadAllAvailableByLectureItemIdIn(List<Long> lectureItemIds) {
+        return lectureInventoryRepository.findAllAvailableByLectureItemIdIn(lectureItemIds);
+    }
 }

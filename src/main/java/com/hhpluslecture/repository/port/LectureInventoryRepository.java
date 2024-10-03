@@ -10,4 +10,6 @@ public interface LectureInventoryRepository {
     void update(LectureInventory lectureInventory);
 
     List<LectureInventory> findAllByLectureItemIds(List<Long> lectureItemIds);
+
+    List<LectureInventory> findAllAvailableByLectureItemIdIn(List<Long> lectureItemIds);
 }

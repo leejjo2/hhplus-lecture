@@ -48,13 +48,14 @@ public class LoadAvailableLectureItemsUseCase {
         List<Long> lectureIds = lectureItems.stream().map(LectureItem::getLectureId).collect(Collectors.toList());
         List<Long> lectureItemIds = lectureItems.stream().map(LectureItem::getId).collect(Collectors.toList());
 
+        Map<Long, LectureItem> lectureItemMap = lectureItems.stream().collect(Collectors.toMap(LectureItem::getId, Function.identity()));
         Map<Long, Lecture> lectureMap = lectureService.loadAllByIds(lectureIds).stream().collect(Collectors.toMap(Lecture::getId, Function.identity()));
-        Map<Long, LectureInventory> lectureInventoryMap = lectureInventoryService.loadAllByLectureItemIds(lectureItemIds).stream().collect(Collectors.toMap(LectureInventory::getId, Function.identity()));
+        List<LectureInventory> availableLectureInventories = lectureInventoryService.loadAllAvailableByLectureItemIdIn(lectureItemIds);
 
         List<Output> outputList = new ArrayList<>();
-        for (LectureItem lectureItem : lectureItems) {
-            Lecture lecture = lectureMap.get(lectureItem.getLectureId());
-            LectureInventory lectureInventory = lectureInventoryMap.get(lectureItem.getId());
+        for (LectureInventory availableLectureInventory : availableLectureInventories) {
+            Lecture lecture = lectureMap.get(availableLectureInventory.getLectureId());
+            LectureItem lectureItem = lectureItemMap.get(availableLectureInventory.getLectureItemId());
 
             Output out = new Output(
                     lecture.getId(),
@@ -63,8 +64,8 @@ public class LoadAvailableLectureItemsUseCase {
                     lectureItem.getId(),
                     lectureItem.getDate(),
                     lectureItem.getCapacity(),
-                    lectureInventory.getId(),
-                    lectureInventory.getAvailableSeats()
+                    availableLectureInventory.getId(),
+                    availableLectureInventory.getAvailableSeats()
             );
 
             outputList.add(out);

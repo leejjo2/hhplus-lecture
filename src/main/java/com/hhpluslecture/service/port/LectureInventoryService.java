@@ -10,4 +10,6 @@ public interface LectureInventoryService {
     void decreaseInventory(LectureInventory lectureInventory);
 
     List<LectureInventory> loadAllByLectureItemIds(List<Long> lectureItemIds);
+
+    List<LectureInventory> loadAllAvailableByLectureItemIdIn(List<Long> lectureItemIds);
 }
